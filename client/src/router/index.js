@@ -1,76 +1,67 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import routes from './routers'
+// import store from '@/store'
+import iView from 'iview'
+import { canTurnTo, getToken } from '@/libs/util'
 
 Vue.use(Router)
+const router = new Router({
+  routes,
+  mode: 'history'
+})
+const LOGIN_PAGE_NAME = 'login'
 
-/* Layout */
-import Layout from '@/layout'
+router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start()
+  const token = getToken()
 
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+  if (!token && to.name !== LOGIN_PAGE_NAME) {
+    // 未登录且要跳转的页面不是登录页
+    next({
+      name: LOGIN_PAGE_NAME // 跳转到登录页
+    })
+  } else if (!token && to.name === LOGIN_PAGE_NAME) {
+    // 未登陆且要跳转的页面是登录页
+    next() // 跳转
+  } else if (token) {
+    // 已登录
+    if (isMobile()) {
+      if (to.name === 'mobileView') {
+        next()
+      } else {
+        next({ name: 'mobileView' })
+      }
+    } else if (to.name === LOGIN_PAGE_NAME || !to.name) {
+      next({
+        name: 'home',
+        params: {
+          id: 1
+        }
+      })
+    } else {
+      if (canTurnTo(to.name, 'user.access', routes)) next() // 有权限，可访问
+      else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
+    }
+  } else {
+    // store.dispatch('getUserInfo').then(user => {
+    // 拉取用户信息，通过用户权限和跳转的页面的name来判断是否有权限访问;access必须是一个数组，如：['super_admin'] ['super_admin', 'admin']
+    if (canTurnTo(to.name, 'user.access', routes)) next() // 有权限，可访问
+    else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
+    // })
   }
- */
-
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
-export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '控制面板', icon: 'dashboard' }
-    }]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
-]
-
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
 })
 
-const router = createRouter()
+router.afterEach(to => {
+  iView.LoadingBar.finish()
+  window.scrollTo(0, 0)
+})
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+function isMobile () {
+  let userAgent = window.navigator.userAgent
+  if (userAgent.indexOf('iPhone') > -1 || userAgent.indexOf('Android') > -1) {
+    return true
+  }
+  return false
 }
-
 export default router

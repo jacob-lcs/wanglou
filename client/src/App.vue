@@ -5,22 +5,28 @@
 </template>
 
 <script>
-import { getToken } from './utils/auth'
-import { getInfo } from './api/user'
-export default {
-  name: 'App',
-  mounted() {
-    this.getUserInfo()
-  },
-  methods: {
-    getUserInfo() {
-      const token = getToken()
-      if (token) {
-        getInfo().then(res => {
-          this.$store.dispatch('user/setInfo', res.data)
-        })
-      }
-    }
+  export default {
+    name: 'App'
   }
-}
 </script>
+
+<style lang="less">
+.size {
+  width: 100%;
+  height: 100%;
+}
+
+html,
+body {
+  .size;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  min-width: 1200px;
+  overflow-x: scroll;
+}
+
+#app {
+  .size;
+}
+</style>
