@@ -1,34 +1,46 @@
 {
   "name": "wanglou-server",
-  "version": "0.0.1",
-  "description": "望楼后端",
-  "tags": [
-    "orm",
-    "typescript",
-    "koa"
-  ],
-  "scripts": {
-    "start": "nodemon",
-    "build": "rm -rf dist && tsc",
-    "pro": "npx pm2 start ecosystem.config.js --env production",
-    "restart": "pm2 restart ecosystem.config.js --env production",
-    "stop": "npx pm2 stop ecosystem.config.js"
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "egg": {
+    "declarations": true
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "koa": "^2.13.1",
-    "koa-bodyparser": "^4.3.0",
-    "koa-router": "^10.0.0"
+    "egg": "^2.15.1",
+    "egg-scripts": "^2.11.0"
   },
   "devDependencies": {
-    "@types/koa": "^2.11.6",
-    "@types/koa-bodyparser": "^4.3.0",
-    "@types/koa-router": "^7.4.1",
-    "@types/node": "^14.14.20",
-    "nodemon": "^2.0.7",
-    "pm2": "^4.5.1",
-    "ts-node": "^9.1.1",
-    "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.1.3"
-  }
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg-bin": "^4.11.0",
+    "egg-ci": "^1.11.0",
+    "egg-mock": "^3.21.0",
+    "eslint": "^5.13.0",
+    "eslint-config-egg": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "egg-scripts start --daemon --title=egg-server-wanglou-server",
+    "stop": "egg-scripts stop --title=egg-server-wanglou-server",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod"
+  },
+  "ci": {
+    "version": "10"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "MIT"
 }
