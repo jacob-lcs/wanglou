@@ -1,8 +1,8 @@
 const router = require('koa-router')()
 const api = require('../api')
 
-// 用户相关api
-// router.get('/api/user/logout', api.user.logout)
-// router.post('/api/user/updateName', api.user.updateName)
+router.get('/api/watch/getLogList', api.watch.getLogList)
+router.get('/api/watch/getLogDetail', api.watch.getLogDetail)
+router.post('/api/watch/uploadLog', api.watch.uploadLog)
 
 module.exports = router

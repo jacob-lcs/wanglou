@@ -6,6 +6,10 @@ const tips = {
   1: {
     code: 1,
     message: 'success'
+  },
+  2: {
+    code: 2,
+    message: '服务器错误'
   }
 }
 

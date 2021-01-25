@@ -13,13 +13,22 @@ let query = function (sql, values) {
   return new Promise((resolve, reject) => {
     pool.getConnection(function (err, connection) {
       if (err) {
-        resolve(err)
+        reject({
+          error: 1,
+          message: err
+        })
       } else {
         connection.query(sql, values, (err, rows) => {
           if (err) {
-            reject(err)
+            reject({
+              error: 1,
+              message: err
+            })
           } else {
-            resolve(rows)
+            resolve({
+              error: 0,
+              message: rows
+            })
           }
           connection.release()
         })

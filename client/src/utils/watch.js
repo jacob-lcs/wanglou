@@ -10,10 +10,14 @@ export const startWatching = () => {
       columnNumber: colno,
       fileName: source,
       message: message,
-      userAgent: window.navigator.userAgent
+      userAgent: window.navigator.userAgent,
+      url: window.location.href,
+      title: document.title,
+      time: Date.now(),
+      performance: window.performance,
+      type: error.name
     };
-
-    // console.log(`🤖🤝👽 ~ file: watch.js ~ line 7 ~ startWatching ~ errorInfo`, errorInfo);
+    window.fetch('http://localhost:4000/api/watch/uploadLog', { method: 'POST', body: JSON.stringify(errorInfo) })
   }
   // 重写 onclick 函数
   window.onclick = (event) => {
@@ -24,7 +28,7 @@ export const startWatching = () => {
         title: document.title
       },
       detail: {
-        outerHtml: event.target.outerHTML,
+        outerHtml: event.target.outerHTML.slice(100),
         tagName: event.target.tagName,
       },
       time: Date.now()

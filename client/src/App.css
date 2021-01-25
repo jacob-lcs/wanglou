@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+.button-container {
+  height: 10vh;
+}
+.log-container {
+  display: flex;
+  height: 90vh;
+}
+
+.list-view {
+  flex: 1;
+  border: #282c34 solid 1px;
+}
+
+.detail-view {
+  flex: 5;
+  border: #282c34 solid 1px;
+}
