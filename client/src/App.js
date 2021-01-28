@@ -6,7 +6,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listData: []
+      listData: [],
+      detailData: {}
     }
   }
 
@@ -25,8 +26,14 @@ class App extends React.Component {
     })
   }
 
-  getDetail = (id) => {
-
+  getDetail = async (id) => {
+    const res = await fetch(`http://localhost:4000/api/watch/getLogDetail?id=${id}`).then(r => {
+      return r.json()
+    });
+    this.setState({
+      detailData: res.data
+    })
+    console.log(`🤖🤝👽 ~ file: App.js ~ line 33 ~ App ~ res ~ res`, this.state.detailData);
   }
 
   componentDidMount = () => {
@@ -34,7 +41,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { listData } = this.state;
+    const { listData, detailData } = this.state;
     return (
       <div className="App">
         <div className='button-container'>
@@ -51,15 +58,26 @@ class App extends React.Component {
                 listData.map(item => <div
                     style={{height: 100, paddingTop: 30, border: '1px solid black', cursor: 'pointer'}}
                     onClick={() => {this.getDetail(item.id)}}
+                    key={item.id}
                   >
                   <b>{item.type}</b><br/>
-                  <b>{new Date(Number(item.time)).toLocaleTimeString()}</b>
+                  <b>{new Date(Number(item.time)).toLocaleString()}</b>
                 </div>)
               }
             </div>
           </div>
           <div className='detail-view'>
-
+            {
+              JSON.parse(detailData.breadcrumbs || '[]').map(item => <div className='detail-item'>
+                {item.type === 'click' ? '点击事件' : item.type}
+                {item.type === 'click' && <p>{item.detail.outerHtml}</p>}
+                {item.type === 'console' && <p>{item.detail.arguments[0]}</p>}
+              </div>)
+            }
+            <p>
+              <p style={{color: 'red'}}>{detailData.message}</p>
+              {detailData.stacktrace}
+            </p>
           </div>
         </div>
       </div>

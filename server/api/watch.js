@@ -64,7 +64,7 @@ const getLogDetail = async (ctx, next) => {
   }
   return (ctx.body = {
     ...tips[1],
-    data: list,
+    data: list[0],
   });
 };
 

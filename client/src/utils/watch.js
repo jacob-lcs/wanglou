@@ -28,12 +28,13 @@ export const startWatching = () => {
         title: document.title
       },
       detail: {
-        outerHtml: event.target.outerHTML.slice(100),
+        outerHtml: event.target.outerHTML,
         tagName: event.target.tagName,
       },
       time: Date.now()
     };
     for (let item of event.target.attributes) {
+      if(item.name === 'outerHtml') { continue; }
       res.detail[item.name] = item.value;
     }
     window.actionStack.push(res)
